@@ -31,8 +31,6 @@ The expected answer is the `mpg` dataset from R.
 mpg
 ```
 
-<!-- Stub that would be ideal -->
-
 ```{python ex1-check}
 python_grade_result(
   python_pass_if(mpg, "You also got the mpg dataframe!"),
