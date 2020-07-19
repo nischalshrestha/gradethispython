@@ -4,15 +4,46 @@
 \alias{py_grade_learnr}
 \title{R wrapper around `python_grade_learnr`}
 \usage{
-py_grade_learnr(...)
+py_grade_learnr(
+  label = NULL,
+  solution_code = NULL,
+  user_code = NULL,
+  check_code = NULL,
+  envir_result = NULL,
+  evaluate_result = NULL,
+  envir_prep = NULL,
+  last_value = NULL,
+  ...
+)
 }
 \arguments{
-\item{...}{All learnr arguments required for checking}
+\item{label}{Label for exercise chunk}
+
+\item{solution_code}{Code provided within the “-solution” chunk for the
+exercise.}
+
+\item{user_code}{R code submitted by the user}
+
+\item{check_code}{Code provided within the “-check” chunk for the exercise.}
+
+\item{envir_result}{The R environment after the execution of the chunk.}
+
+\item{evaluate_result}{The return value from the `evaluate::evaluate`
+function.}
+
+\item{envir_prep}{A copy of the R environment before the execution of the
+chunk.}
+
+\item{last_value}{The last value from evaluating the exercise.}
+
+\item{...}{Extra arguments supplied by learnr}
 }
 \value{
 An R list which contains several fields indicating the result of the
   check.
 }
 \description{
-R wrapper around `python_grade_learnr`
+To enable exercise checking in your learnr tutorial, set
+`tutorial_options(exercise.checker = py_grade_learnr)` in the setup chunk
+of your tutorial.
 }
