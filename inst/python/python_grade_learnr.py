@@ -1,8 +1,8 @@
 import random
 import pandas as pd
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Tuple
 
-def praise():
+def praise() -> str:
   """Returns a random praise message"""
   return random.choice([
       "Absolutely fabulous!",
@@ -46,7 +46,7 @@ def praise():
     ]
   )
 
-def encourage():
+def encourage() -> str:
   """Returns a random encouragement message"""
   return random.choice([
       "Please try again.",
@@ -62,19 +62,19 @@ def encourage():
     ]
   )
 
-# list(message = message %||% "", correct = correct)
-def python_condition(x: Any, message: str, correct: bool):
+def python_condition(x: Any, message: str, correct: bool) -> dict:
   """Return the proper structure for a particular type of condition."""
   return dict(x = x, message = message, correct = correct, type = "append")
 
-def python_pass_if(x, message = ""):
+def python_pass_if(x: Any, message = "") -> dict:
   """Return a pass condition."""
   return python_condition(x, message, correct = True)
 
-def python_fail_if(x, message = ""):
+def python_fail_if(x: Any, message = "") -> dict:
   """Return a fail condition."""
   return python_condition(x, message, correct = False)
 
+# TODO make sure args are actually python_pass_if/fail_if functions
 def python_grade_result(*args, **kwargs):
   """
   This function mirrors the `grade_result` function from {gradethis} package so that
@@ -85,7 +85,7 @@ def python_grade_result(*args, **kwargs):
   """
   return args
   
-def compare_output(user_output, expected_output):
+def compare_output(user_output: Any, expected_output: Any) -> bool:
   if type(user_output) != type(expected_output):
     return False
   elif isinstance(user_output, pd.DataFrame) and isinstance(expected_output, pd.DataFrame):
@@ -93,7 +93,7 @@ def compare_output(user_output, expected_output):
   else:
     return user_output == expected_output
   
-def grade_conditions(conditions, user_code_result):
+def grade_conditions(conditions: List[Any], user_code_result: Any) -> Tuple[bool, dict]:
   """
   Goes through all conditions (python_pass_if, python_fail_if) and
   returns the first condition that comes True.
@@ -109,6 +109,8 @@ def grade_conditions(conditions, user_code_result):
 
 def evaluate_code(code: List[str]):
   """ Evaluate check code so that expected output is ready """
+  # Note: because Python is eager evaluation, we already have introduced
+  # the `r` object when entering `python_grade_learnr`
   return eval("".join(code), {}, r)
     
 def python_grade_learnr(label: str = None,
@@ -119,13 +121,14 @@ def python_grade_learnr(label: str = None,
                         evaluate_result: List = None,
                         envir_prep: dict = None, 
                         last_value: List = None, 
-                        **kwargs):
+                        **kwargs) -> dict:
     """
     This function mirrors the `grade_learnr` function from {gradethis} package so that
     we can check Python exercises.
     """
     # evaluate check code so that expected output is ready
     if check_code != None and user_code != None:
+      # TODO we need to be better about checking the user actually used pass if/fail functions
       check_code_conditions = evaluate_code(check_code)
       # evaluate user code so that we can compare to expected
       user_code_result = evaluate_code(user_code)
@@ -141,4 +144,13 @@ def python_grade_learnr(label: str = None,
     else:
       return dict(message = "I didn't receive your code. Did you write any?", correct = False, type = "error", location = "append")
 
+if __name__ == '__main__':
+  # for now we don't have any additional setup
+  pass
+else:
+  # this is so that when we use `reticulate::import_from_path` to selectively
+  # expose functions, we make sure to also import `r` which normally doesn't get
+  # imported unless we do `reticulate::source`
+  from __main__ import r
+  
 

@@ -31,7 +31,6 @@ py_grade_learnr <- function(label = NULL,
                             envir_prep = NULL,
                             last_value = NULL,
                             ...) {
-
   # need to cast environment types to a list so reticulate can translate to Python's dicts
   python_grade_learnr(
     label,
