@@ -7,6 +7,9 @@
 Untitled
 issues
 
+# Potential python artifacts to ignore
+__pycache__
+
 # atom config folder
 .atom/
 

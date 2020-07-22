@@ -11,10 +11,9 @@ description: >
 library(learnr)
 library(gradethis)
 library(tidyverse)
-library(reticulate)
-library(pygradethis)
+library(gradethispython)
 # this works, but you can also set python chunk's exercise.checker
-tutorial_options(exercise.checker = pygradethis::py_grade_learnr)
+tutorial_options(exercise.checker = gradethispython::py_grade_learnr)
 d <- 2
 ```
 

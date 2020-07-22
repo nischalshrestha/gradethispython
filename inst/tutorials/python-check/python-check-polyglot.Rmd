@@ -12,7 +12,7 @@ library(learnr)
 library(gradethis)
 library(tidyverse)
 library(reticulate)
-library(pygradethis)
+library(gradethispython)
 # exercise checker for R exercises
 tutorial_options(exercise.checker = gradethis::grade_learnr)
 d <- 2
@@ -25,17 +25,26 @@ mpg = r.mpg
 mpg
 ```
 
-The expected answer is the `mpg` dataset from R. This exercise uses `pygradethis::py_grade_learnr` for checking solution.
+The expected answer is the `mpg` dataset from R. This exercise uses `gradethispython::py_grade_learnr` for checking solution.
 
-```{python ex1, exercise=TRUE, exercise.setup = "df", exercise.checker = pygradethis::py_grade_learnr}
+```{python ex1, exercise=TRUE, exercise.setup = "df", exercise.checker = gradethispython::py_grade_learnr}
 mpg
 ```
 
 ```{python ex1-check}
 python_grade_result(
   python_pass_if(mpg, "You also got the mpg dataframe!"),
-  python_fail_if(None, "")
+  python_fail_if(None, "Remember to return the right dataset!"),
 )
+```
+
+<!-- Ideal stub: just code as is -->
+<!-- ```{python ex1-code-check} -->
+<!-- mpg -->
+<!-- ``` -->
+
+```{python ex1-solution}
+mpg
 ```
 
 # R
@@ -46,7 +55,7 @@ mpg
 
 ```{r ex2-code-check}
 gradethis::grade_code(
-  correct = "good job",
+  correct = "Good job!"
 )
 ```
 
