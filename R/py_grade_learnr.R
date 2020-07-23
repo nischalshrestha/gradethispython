@@ -2,13 +2,13 @@
 #' R wrapper around `python_grade_learnr`
 #'
 #' To enable exercise checking in your learnr tutorial, set
-#' `tutorial_options(exercise.checker = py_grade_learnr)` in the setup chunk
-#' of your tutorial.
+#' `tutorial_options(exercise.checker = gradethispython::py_grade_learnr)` in the setup chunk
+#' of your tutorial. Or, set the `exercise.checker` for an individual Python chunk.
 #'
 #' @param label Label for exercise chunk
 #' @param solution_code Code provided within the “-solution” chunk for the
 #'   exercise.
-#' @param user_code R code submitted by the user
+#' @param user_code Python code submitted by the user
 #' @param check_code Code provided within the “-check” chunk for the exercise.
 #' @param envir_result The R environment after the execution of the chunk.
 #' @param evaluate_result The return value from the `evaluate::evaluate`

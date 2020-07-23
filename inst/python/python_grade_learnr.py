@@ -1,6 +1,15 @@
+"""
+This module contains functions to faciliate checking Python exercises in learnr.
+
+NOTE: This whole soon be moved to its own Python package.
+"""
+
 import random
 import pandas as pd
 import parser
+from collections import namedtuple
+from typing import NamedTuple
+
 from typing import Any, Callable, List, Tuple
 
 def praise() -> str:
@@ -63,11 +72,51 @@ def encourage() -> str:
     ]
   )
 
+class Graded(dict):
+    """Convience class to represent the graded result for an exercise.
+    
+    Note: subclassing a dict allows us to take advantage of checking
+    instance class of objects `isinstance(x, Graded)` and have the
+    object represent a dict which `reticulate` can easily translate.
+    
+    Returned `dict` is equivalent to the `list` returned in `gradethis::grade_learnr`
+    
+    Example:
+    
+    Graded(
+        message = "No solution is provided for this exercise.",
+        correct = True,
+        type = "info",
+        location = "append"
+    )
+    """
+    def __init__(self, *args, **kwargs):
+      super(Graded, self).__init__(kwargs)
+
+class GraderCondition(dict):
+    """Convience class to represent the a grader condition for an exercise.
+    
+    Note: we subclass a `dict` for the same reason as `Graded`
+    
+    Returned `dict` is equivalent to the `list` returned in `gradethis::condition`
+    
+    Example:
+    
+    GraderCondition(
+      x = x,
+      message = message,
+      correct = correct,
+      type = type
+    )
+    """
+    def __init__(self, *args, **kwargs):
+      super(GraderCondition, self).__init__(kwargs)
+
 def python_condition(x: Any, message: str, correct: bool, type: str = "value") -> dict:
   """Return the proper structure for a particular type of condition."""
   # Note: we don't use the type field from `gradethis::condition` yet, so assumes value
   # TODO think about whether we allow passing of a function (lambda or regular)
-  return dict(x = x, message = message, correct = correct, type = type)
+  return GraderCondition(x = x, message = message, correct = correct, type = type)
 
 def python_pass_if(x: Any, message = "") -> dict:
   """Return a pass condition."""
@@ -76,20 +125,6 @@ def python_pass_if(x: Any, message = "") -> dict:
 def python_fail_if(x: Any, message = "") -> dict:
   """Return a fail condition."""
   return python_condition(x, message, correct = False)
-  
-def python_result(message: str, correct: bool, type: str, location: str) -> dict:
-  return dict(message = message, correct = correct, type = type, location = location)
-
-def python_grade_result(*args, **kwargs):
-  """
-  This function mirrors the `grade_result` function from {gradethis} package so that
-  we can check Python exercises.
-  
-  For now, all it does is to get all of the python_pass_if/fail_if conditions and 
-  returning it.
-  """
-  # TODO make sure args are actually python_pass_if/fail_if functions
-  return args
   
 def python_compare_output(user_output: Any, expected_output: Any) -> bool:
   """Return whether the user output and expected output match"""
@@ -105,6 +140,7 @@ def python_grade_conditions(conditions: List[Any], user_code_result: Any) -> Tup
   Goes through all conditions (python_pass_if, python_fail_if) and
   returns the first condition that comes True.
   """
+  # TODO handle the case where you might only have fail_ifs but they don't match (issue #4)
   result = False
   condition = None
   for cond in conditions:
@@ -113,6 +149,18 @@ def python_grade_conditions(conditions: List[Any], user_code_result: Any) -> Tup
     if result:
       return result, condition
   return False, condition
+
+def python_grade_result(*args, **kwargs) -> Graded:
+  """
+  This function mirrors the `grade_result` function from {gradethis} package so that
+  we can check Python exercises.
+  
+  For now, all it does is to get all of the python_pass_if/fail_if conditions and 
+  returning it.
+  """
+  if args == None or len([a for a in args if isinstance(a, GraderCondition)]) == 0:
+    raise Exception("At least one condition object (e.g., `python_pass_if()`, `python_fail_if()`, `python_condition()`) must be provided to `python_grade_result()`")
+  return args
 
 def python_grade_learnr(label: str = None,
                         solution_code: str = None, 
@@ -129,7 +177,7 @@ def python_grade_learnr(label: str = None,
     """
     # check if there is user_code
     if user_code and "".join(user_code) == "":
-      return python_result(
+      return Graded(
         message = "I didn't receive your code. Did you write any?",
         correct = False,
         type = "error",
@@ -137,7 +185,7 @@ def python_grade_learnr(label: str = None,
       )
     # if there is check code and solution code, check if there is a solution code
     if (check_code and solution_code) and "".join(solution_code) == "":
-      return python_result(
+      return Graded(
         message = "No solution is provided for this exercise.",
         correct = True,
         type = "info",
@@ -146,27 +194,38 @@ def python_grade_learnr(label: str = None,
     
     # evaluate exercise
     try:
-      # TODO should be checking the user actually used pass if/fail functions
       # Note: because Python is eager evaluation, we already have introduced
       # the `r` object in the current scope when entering this function
       # evaluate check code so that expected output is ready
       check_code_conditions = eval("".join(check_code), {}, r)
       # evaluate user code so that we can compare to expected
       user_code_result = eval("".join(user_code), {}, r)
-    except EOFError:
-      return python_result(correct = False, message = "Error occured while checking the submission", type = "error", location = "append")
+    except Exception as e:
+      # TODO somehow trickle up the specific error message
+      return Graded(
+        correct = False, 
+        message = "Error occured while checking the submission", 
+        type = "warning", 
+        location = "append"
+      )
 
     # grade python_pass_if/fail_if conditions against user's code output
-    # TODO fix the bug where you get encourage for incorrect for a single pass_if condition
     result, condition = python_grade_conditions(check_code_conditions, user_code_result)
-
     # return a list representing a graded condition for learnr to process for feedback
     if result:
-      # TODO concatenate praise before custom message
-      praising = f"{praise()} {condition['message']}" if condition['message'] != "" else praise()
-      return python_result(message = praising, correct = condition['correct'], type = "success", location = "append")
+      return Graded(
+        message = f"{praise()} {condition['message']}", 
+        correct = condition['correct'], 
+        type = "success", 
+        location = "append"
+      )
     else:
-      return python_result(message = f"{encourage()} {condition['message']}", correct = condition['correct'], type = "error", location = "append")
+      return Graded(
+        message = f"{encourage()} {condition['message']}", 
+        correct = condition['correct'], 
+        type = "error", 
+        location = "append"
+      )
 
 if __name__ == '__main__':
   # for now we don't have any additional setup

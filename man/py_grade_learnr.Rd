@@ -22,7 +22,7 @@ py_grade_learnr(
 \item{solution_code}{Code provided within the “-solution” chunk for the
 exercise.}
 
-\item{user_code}{R code submitted by the user}
+\item{user_code}{Python code submitted by the user}
 
 \item{check_code}{Code provided within the “-check” chunk for the exercise.}
 
@@ -44,6 +44,6 @@ An R list which contains several fields indicating the result of the
 }
 \description{
 To enable exercise checking in your learnr tutorial, set
-`tutorial_options(exercise.checker = py_grade_learnr)` in the setup chunk
-of your tutorial.
+`tutorial_options(exercise.checker = gradethispython::py_grade_learnr)` in the setup chunk
+of your tutorial. Or, set the `exercise.checker` for an individual Python chunk.
 }
