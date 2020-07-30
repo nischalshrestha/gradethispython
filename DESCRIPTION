@@ -22,3 +22,5 @@ RoxygenNote: 7.1.1
 Imports:
   reticulate
 URL: https://rstudio.github.io/learnr/
+Suggests: 
+    testthat (>= 2.1.0)

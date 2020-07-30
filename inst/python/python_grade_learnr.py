@@ -7,8 +7,6 @@ NOTE: This whole soon be moved to its own Python package.
 import random
 import pandas as pd
 import parser
-from collections import namedtuple
-from typing import NamedTuple
 
 from typing import Any, Callable, List, Tuple
 
@@ -150,6 +148,9 @@ def python_grade_conditions(conditions: List[Any], user_code_result: Any) -> Tup
       return result, condition
   return False, condition
 
+# TODO add the other kwargs for this:
+# glue_correct = getOption("gradethis_glue_correct"),
+# glue_incorrect = getOption("gradethis_glue_incorrect")
 def python_grade_result(*args, **kwargs) -> Graded:
   """
   This function mirrors the `grade_result` function from {gradethis} package so that
