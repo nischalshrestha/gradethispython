@@ -12,8 +12,7 @@ library(learnr)
 library(gradethis)
 library(tidyverse)
 library(reticulate)
-library(gradethispython)
-# exercise checker for R exercises
+library(gradethispython) # exercise checker for R exercises
 tutorial_options(exercise.checker = gradethis::grade_learnr)
 d <- 2
 ```
@@ -22,7 +21,6 @@ d <- 2
 
 ```{python df}
 mpg = r.mpg
-mpg
 ```
 
 The expected answer is the `mpg` dataset from R. This exercise uses `gradethispython::py_grade_learnr` for checking solution.
