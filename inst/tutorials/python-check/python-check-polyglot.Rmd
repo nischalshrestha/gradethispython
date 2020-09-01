@@ -36,11 +36,6 @@ python_grade_result(
 )
 ```
 
-<!-- Ideal stub: just code as is -->
-<!-- ```{python ex1-code-check} -->
-<!-- mpg -->
-<!-- ``` -->
-
 ```{python ex1-solution}
 mpg
 ```
@@ -67,5 +62,4 @@ gradethis::grade_result(
   fail_if(~ TRUE, "Oops!")
 )
 ```
-
 

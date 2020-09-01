@@ -32,7 +32,7 @@ py_grade_learnr <- function(label = NULL,
                             last_value = NULL,
                             ...) {
   # need to cast environment types to a list so reticulate can translate to Python's dicts
-  python_grade_learnr(
+  grade <- python_grade_learnr(
     label,
     solution_code,
     user_code,
@@ -40,7 +40,17 @@ py_grade_learnr <- function(label = NULL,
     as.list(envir_result),
     evaluate_result,
     as.list(envir_prep),
-    last_value,
-    ...
+    last_value
+  )
+  # Note: each field needs to be manually converted as the returned dict
+  # cannot be converted properly as it gets interpreted as an environment
+  structure(
+    list(
+      message = reticulate::py_to_r(grade$message),
+      correct = reticulate::py_to_r(grade$correct),
+      type = reticulate::py_to_r(grade$type),
+      location = reticulate::py_to_r(grade$location)
+    ),
+    class = "grader_feedback"
   )
 }
