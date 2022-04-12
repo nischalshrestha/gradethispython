@@ -1,6 +1,6 @@
 Package: gradethispython
 Type: Package
-Title: Python tutorial exercise checking for learnr
+Title: Python exercise checker for learnr tutorials
 Version: 0.0.0.9000
 Authors@R: 
     c(person(given = "Nischal",
@@ -12,7 +12,7 @@ Authors@R:
              role = c("ths", "cre"),
              email = "barret@rstudio.com"))
 Description: Pairing with the 'learnr' R package,
-    'gradethispython' provides multiple methods to grade Python 'learnr' exercises.  To
+    'gradethispython' provides the exercise checker to grade Python 'learnr' exercises. To
     learn more about 'learnr' tutorials, please visit
     <http://rstudio.github.io/learnr/>.
 License: MIT + file LICENSE
@@ -20,7 +20,13 @@ Encoding: UTF-8
 LazyData: true
 Imports:
   reticulate
-RoxygenNote: 7.1.1
+Config/reticulate:
+  list(
+    packages = list(
+      list(package = "pygradethis")
+    )
+  )
+RoxygenNote: 7.1.2
 URL: https://rstudio.github.io/learnr/
 Suggests: 
     testthat (>= 2.1.0)

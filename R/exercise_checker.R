@@ -1,8 +1,8 @@
 
 #' R wrapper around `python_grade_learnr`
 #'
-#' To enable exercise checking in your learnr tutorial, set
-#' `tutorial_options(exercise.checker = gradethispython::py_grade_learnr)` in the setup chunk
+#' To enable exercise checking in your learnr tutorial, you can set
+#' `tutorial_options(exercise.checker = gradethispython::exercise_checker)` in the setup chunk
 #' of your tutorial. Or, set the `exercise.checker` for an individual Python chunk.
 #'
 #' @param label Label for exercise chunk
@@ -10,19 +10,18 @@
 #'   exercise.
 #' @param user_code Python code submitted by the user
 #' @param check_code Code provided within the “-check” chunk for the exercise.
-#' @param envir_result The R environment after the execution of the chunk.
+#' @param envir_result The Python environment after the execution of the chunk.
 #' @param evaluate_result The return value from the `evaluate::evaluate`
 #'   function.
-#' @param envir_prep A copy of the R environment before the execution of the
+#' @param envir_prep A copy of the Python environment before the execution of the
 #'   chunk.
 #' @param last_value The last value from evaluating the exercise.
 #' @param ... Extra arguments supplied by learnr
 #'
-#' @return An R list which contains several fields indicating the result of the
+#' @return The `gradethis::graded()` list which contains several fields indicating the result of the
 #'   check.
 #' @export
-#'
-py_grade_learnr <- function(label = NULL,
+exercise_checker <- function(label = NULL,
                             solution_code = NULL,
                             user_code = NULL,
                             check_code = NULL,
@@ -51,6 +50,6 @@ py_grade_learnr <- function(label = NULL,
       type = reticulate::py_to_r(grade$type),
       location = reticulate::py_to_r(grade$location)
     ),
-    class = "grader_feedback"
+    class = "gradethis_graded"
   )
 }
