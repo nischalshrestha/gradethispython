@@ -1,3 +1,7 @@
+# ARCHIVED
+
+This repo is now archived. It now lives in [pygradethis](https://github.com/rstudio/pygradethis) (under `R/`).
+
 <!-- badges: start -->
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-blue.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
